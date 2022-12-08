@@ -1,0 +1,13 @@
+package com.blog.exception;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+public class Error {
+
+	private String message;
+	private LocalDate date;
+	private LocalTime time;
+	private String details;
+	
+}

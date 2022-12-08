@@ -1,0 +1,93 @@
+package com.blog.service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.blog.exception.UserException;
+import com.blog.model.User;
+import com.blog.payloads.UserDto;
+import com.blog.repository.UserDao;
+
+@Service
+public class UserServiceImpl implements UserService{
+
+	@Autowired
+	private UserDao userDao;
+	
+	
+	@Override
+	public UserDto createUser(UserDto userDto) {
+		User  user = this.dtoToUser(userDto);
+		User savedUser = userDao.save(user);
+		return this.userToUserDto(savedUser);
+	}
+
+	@Override
+	public UserDto updateUser(Integer userId, UserDto userDto) throws UserException{
+		
+		User user = userDao.findById(userId).
+					orElseThrow(() -> new UserException("Incorrect userId"));
+		
+		user.setEmail(userDto.getEmail());
+		user.setName(userDto.getName());
+		user.setPassword(userDto.getPassword());
+		
+		User save = userDao.save(user);
+		return userToUserDto(save);
+	}
+
+	@Override
+	public UserDto getUserById(Integer userId) throws UserException{
+		User user = userDao.findById(userId).
+				orElseThrow(() -> new UserException("Incorrect userId"));
+		return userToUserDto(user);
+	}
+
+	@Override
+	public List<UserDto> getAllUsers() {
+		
+		List<User> users = userDao.findAll();
+		List<UserDto> userDto = users.stream().map(user-> this.userToUserDto(user)).collect(Collectors.toList());
+		return userDto;
+	}
+
+	@Override
+	public void deleteUser(Integer userId)throws UserException {
+
+		userDao.findById(userId).orElseThrow(()->new UserException("User doesn't exist of id: "+ userId));
+	
+	}
+	
+	private User dtoToUser(UserDto userDto ) {
+		return new User(userDto.getId(), userDto.getName(), userDto.getEmail(), userDto.getPassword());		
+	}
+	
+	private UserDto userToUserDto(User user) {
+		
+		return new UserDto(user.getId(),user.getName() , user.getEmail(), user.getPassword());
+	}
+
+	@Override
+	public List<UserDto> sortgetAllUsers(int pageSize, int pageNumber) {
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		return null;
+	}
+}
